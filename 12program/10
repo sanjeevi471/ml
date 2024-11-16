@@ -1,0 +1,26 @@
+import numpy as np
+import pandas as pd
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+np.random.seed(42)
+df = pd.DataFrame(np.random.rand(100, 1000), columns=[f'Gene_{i}' for i in range(1000)])
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(df)
+pca = PCA(n_components=10)  # Adjust the number of components as needed
+principal_components = pca.fit_transform(X_scaled)
+pc_df = pd.DataFrame(data=principal_components, columns=[f'PC_{i+1}' for i in range(10)])
+plt.figure(figsize=(10, 6))
+plt.bar(range(1, 11), pca.explained_variance_ratio_, alpha=0.7, align='center', label='Individual explained variance')
+plt.step(range(1, 11), np.cumsum(pca.explained_variance_ratio_), where='mid', label='Cumulative explained variance')
+plt.xlabel('Principal Components')
+plt.ylabel('Explained Variance Ratio')
+plt.title('Explained Variance Ratio by Principal Components')
+plt.legend(loc='best')
+plt.show()
+plt.figure(figsize=(10, 6))
+plt.scatter(pc_df['PC_1'], pc_df['PC_2'], alpha=0.7)
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.title('PCA - First Two Principal Components')
+plt.show()
